@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>Cline</author>
+      <authoring_tool>Manual</authoring_tool>
+    </contributor>
+    <created>2025-04-17T00:56:00</created>
+    <modified>2025-04-17T00:56:00</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_effects>
+    <effect id="Material-effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0.1 0.1 0.1 1</color>
+            </ambient>
+            <diffuse>
+              <color sid="diffuse">0.1 0.1 0.1 1</color>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.5 0.5 0.5 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="Material-material" name="Material">
+      <instance_effect url="#Material-effect"/>
+    </material>
+  </library_materials>
+  <library_geometries>
+    <geometry id="track-mesh" name="track">
+      <mesh>
+        <source id="track-mesh-positions">
+          <float_array id="track-mesh-positions-array" count="24">
+            -1.0 -1.0 -0.1
+            -1.0 -1.0 0.1
+            1.0 -1.0 0.1
+            1.0 -1.0 -0.1
+            -1.0 1.0 -0.1
+            -1.0 1.0 0.1
+            1.0 1.0 0.1
+            1.0 1.0 -0.1
+          </float_array>
+          <technique_common>
+            <accessor source="#track-mesh-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="track-mesh-normals">
+          <float_array id="track-mesh-normals-array" count="18">
+            0 -1 0
+            0 1 0
+            -1 0 0
+            1 0 0
+            0 0 -1
+            0 0 1
+          </float_array>
+          <technique_common>
+            <accessor source="#track-mesh-normals-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="track-mesh-vertices">
+          <input semantic="POSITION" source="#track-mesh-positions"/>
+        </vertices>
+        <triangles material="Material-material" count="12">
+          <input semantic="VERTEX" source="#track-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#track-mesh-normals" offset="1"/>
+          <p>
+            0 0 2 0 1 0
+            0 0 3 0 2 0
+            4 1 5 1 6 1
+            4 1 6 1 7 1
+            0 2 1 2 5 2
+            0 2 5 2 4 2
+            3 3 7 3 6 3
+            3 3 6 3 2 3
+            0 4 4 4 7 4
+            0 4 7 4 3 4
+            1 5 2 5 6 5
+            1 5 6 5 5 5
+          </p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="track" name="track" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#track-mesh" name="track">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material-material" target="#Material-material"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

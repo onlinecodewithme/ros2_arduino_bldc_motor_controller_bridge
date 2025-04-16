@@ -21,6 +21,11 @@ setup(
         # Include map files
         (os.path.join('share', package_name, 'maps'),
             glob(os.path.join('maps', '*'))),
+        # Include URDF files and directories with explicit paths
+        (os.path.join('share', package_name, 'urdf'),
+            glob('urdf/*.urdf.xacro')),
+        (os.path.join('share', package_name, 'urdf', 'meshes'),
+            glob('urdf/meshes/*.dae')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -34,6 +39,8 @@ setup(
             'navigation_node = robot_navigation.navigation_node:main',
             'navigation_cli = robot_navigation.navigation_cli:main',
             'test_goal_navigation = robot_navigation.test_goal_navigation:main',
+            'track_rotation_simulator = robot_navigation.track_rotation_simulator:main',
+            'simulated_odometry = robot_navigation.simulated_odometry:main',
         ],
     },
 )
