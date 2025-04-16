@@ -16,7 +16,7 @@ This system provides a reliable interface between ROS2 and Arduino-controlled DC
 
 ## Hardware Requirements
 
-- Arduino Uno or compatible board
+- Arduino Uno/Mega or compatible board
 - Motor driver capable of controlling two DC motors
 - DC motors with hall effect encoders
 - 12V Power supply (or appropriate voltage for your motors)
@@ -37,6 +37,8 @@ The Arduino code uses the following pins by default:
 - **Hall Sensor Pins**:
   - Left Motor: Pin 2
   - Right Motor: Pin 5
+
+> **Note for Arduino Mega users**: These pin assignments are compatible with both Arduino Uno and Mega. If you need to use different pins on your Mega, modify the pin definitions in the Arduino sketch.
 
 ## Software Setup
 
@@ -61,19 +63,32 @@ The Arduino code uses the following pins by default:
    colcon build --packages-select arduino_motor_bridge
    ```
 
-3. **Upload the Arduino firmware**:
+3. **Check your connected Arduino board**:
+   ```bash
+   arduino-cli board list
+   ```
+   This will show which board you have connected and the port it's using.
+
+4. **Upload the Arduino firmware**:
    - Using Arduino IDE:
      - Open `arduino_improved/arduino_improved.ino`
      - Select your Arduino board and port
      - Click Upload
 
    - Using arduino-cli:
-     ```bash
-     arduino-cli compile --fqbn arduino:avr:uno arduino_improved
-     arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno arduino_improved
-     ```
+     - For Arduino Uno:
+       ```bash
+       arduino-cli compile --fqbn arduino:avr:uno arduino_improved
+       arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno arduino_improved
+       ```
+     
+     - For Arduino Mega:
+       ```bash
+       arduino-cli compile --fqbn arduino:avr:mega arduino_improved
+       arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega arduino_improved
+       ```
 
-4. **Source your workspace**:
+5. **Source your workspace**:
    ```bash
    source ~/ros2_ws/install/setup.bash
    ```
@@ -196,6 +211,14 @@ If your motors don't rotate reliably in certain directions:
 - Check USB cable connection
 - Ensure baud rates match (115200 by default)
 
+### Arduino Upload Issues
+
+- Make sure you're using the correct board identifier:
+  - Arduino Uno: `arduino:avr:uno`
+  - Arduino Mega: `arduino:avr:mega`
+- Check which board you have with `arduino-cli board list`
+- Verify the port with `ls -l /dev/ttyACM*`
+
 ### Encoder Feedback Issues
 
 - Verify hall sensor connections
@@ -219,6 +242,19 @@ The current version includes several key improvements:
    - Watchdog timer to stop motors on communication loss
    - Proper error handling for serial communication
    - Enhanced odometry data format
+
+## Arduino Board Advantages
+
+### Arduino Uno
+- Smaller form factor
+- Lower power consumption
+- Sufficient for basic motor control applications
+
+### Arduino Mega
+- More memory (253,952 bytes vs 32,256 bytes program space)
+- More I/O pins for additional sensors or motors
+- Better for complex applications with multiple peripherals
+- Current sketch uses only 3% of program storage on Mega vs 23% on Uno
 
 ## License
 
