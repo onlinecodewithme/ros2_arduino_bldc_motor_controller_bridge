@@ -37,6 +37,8 @@ setup(
             'improved_arduino_bridge = arduino_motor_bridge.improved_bridge_node:main',
             'auto_arduino_bridge = arduino_motor_bridge.auto_bridge_node:main',
             'test_arduino_commands = arduino_motor_bridge.test_arduino_commands:main',
+            'encoder_odometry_node = arduino_motor_bridge.encoder_odometry_node:main',
+            'robust_encoder_node = arduino_motor_bridge.robust_encoder_node:main',
         ],
     },
 )
