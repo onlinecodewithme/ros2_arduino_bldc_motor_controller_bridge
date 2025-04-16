@@ -21,7 +21,10 @@ setup(
         # Create a lib directory for executables
         (os.path.join('lib', package_name), []),
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'transforms3d',  # Alternative to tf_transformations
+    ],
     zip_safe=True,
     maintainer='user',
     maintainer_email='user@example.com',
@@ -31,6 +34,8 @@ setup(
     entry_points={
         'console_scripts': [
             'arduino_bridge_node = arduino_motor_bridge.arduino_bridge_node:main',
+            'improved_arduino_bridge = arduino_motor_bridge.improved_bridge_node:main',
+            'auto_arduino_bridge = arduino_motor_bridge.auto_bridge_node:main',
             'test_arduino_commands = arduino_motor_bridge.test_arduino_commands:main',
         ],
     },
