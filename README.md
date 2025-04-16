@@ -1,10 +1,10 @@
-# ROS2 Arduino Motor Bridge
+# ROS2 Arduino Motor Bridge with Navigation
 
-A robust bridge between ROS2 and Arduino-controlled motors with enhanced motor control capabilities.
+A robust bridge between ROS2 and Arduino-controlled motors with enhanced motor control capabilities and full navigation stack integration.
 
 ## System Overview
 
-This system provides a reliable interface between ROS2 and Arduino-controlled DC motors. It features:
+This system provides a reliable interface between ROS2 and Arduino-controlled DC motors, with added navigation capabilities. It features:
 
 - Bidirectional communication using serial protocol
 - Velocity commands using ROS2 standard Twist messages
@@ -13,6 +13,9 @@ This system provides a reliable interface between ROS2 and Arduino-controlled DC
 - Specialized handling for backward motion
 - Stable motor control with proper minimum speeds
 - Watchdog safety feature to stop motors on communication loss
+- **Full ROS2 Navigation2 (Nav2) integration for autonomous navigation**
+- **Improved Arduino connectivity with auto-reconnection**
+- **Navigation visualization tools with RViz**
 
 ## Hardware Requirements
 
@@ -48,6 +51,7 @@ The Arduino code uses the following pins by default:
 - Python 3.8+
 - `pyserial` package
 - Arduino IDE or arduino-cli for firmware upload
+- **Navigation2 (Nav2) stack installed**
 
 ### Installation
 
@@ -60,7 +64,7 @@ The Arduino code uses the following pins by default:
 2. **Build the package**:
    ```bash
    cd ~/ros2_ws
-   colcon build --packages-select arduino_motor_bridge
+   colcon build --packages-select arduino_motor_bridge robot_navigation
    ```
 
 3. **Check your connected Arduino board**:
@@ -93,7 +97,7 @@ The Arduino code uses the following pins by default:
    source ~/ros2_ws/install/setup.bash
    ```
 
-## Usage
+## Basic Motor Control Usage
 
 ### Starting the Bridge
 
@@ -107,6 +111,12 @@ Or use the launch file (recommended):
 
 ```bash
 ros2 launch arduino_motor_bridge arduino_bridge.launch.py
+```
+
+For the improved version with better error handling and reconnection capabilities:
+
+```bash
+ros2 launch arduino_motor_bridge improved_arduino_bridge.launch.py
 ```
 
 ### Controlling the Motors
@@ -148,46 +158,146 @@ The bridge subscribes to the standard `/cmd_vel` topic and accepts `geometry_msg
    ros2 topic pub --once /cmd_vel geometry_msgs/msg/Twist '{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'
    ```
 
-## Automated Testing
+## Navigation System
+
+The project now includes a complete navigation system that integrates with the Arduino motor bridge, allowing for autonomous navigation with path planning, obstacle avoidance, and localization.
+
+### Running Navigation with Arduino Bridge
+
+The easiest way to run the complete navigation system with improved Arduino connectivity is:
+
+```bash
+./src/robot_navigation/run_improved_navigation.sh
+```
+
+This script provides:
+1. Better Arduino port detection and error handling
+2. Reconnection capability if Arduino disconnects
+3. Enhanced visualization with detailed robot state
+4. Better error reporting
+
+If your Arduino is connected to a different port:
+
+```bash
+./src/robot_navigation/run_improved_navigation.sh --serial-port=/dev/ttyACM1
+```
+
+### Alternative Navigation Launch Options
+
+For different navigation configurations:
+
+1. **Basic Navigation with Visualization**:
+   ```bash
+   ./src/robot_navigation/test_with_visualization.sh
+   ```
+
+2. **Run Navigation with Hall Sensor Odometry**:
+   ```bash
+   ./src/robot_navigation/run_nav_with_sensors.sh
+   ```
+
+3. **Simulation Navigation (without physical hardware)**:
+   ```bash
+   ./src/robot_navigation/run_simulation_navigation.sh
+   ```
+
+4. **Real Hardware Navigation with All Components**:
+   ```bash
+   ./src/robot_navigation/run_real_hardware_navigation.sh
+   ```
+
+### Setting Navigation Goals
+
+#### Using RViz
+
+When the navigation system is running with RViz, you can:
+
+1. Click on the "2D Nav Goal" button in the RViz toolbar
+2. Click and drag on the map to set a goal position and orientation
+3. The robot will navigate to the goal, sending velocity commands to the Arduino
+
+#### Using Command Line
+
+For command line goal setting, you can use the navigation CLI:
+
+```bash
+# In a new terminal
+source install/setup.bash
+ros2 run robot_navigation navigation_cli
+```
+
+Then use these commands:
+- `goto X Y [THETA]` - Navigate to position X,Y with optional orientation THETA in degrees
+- `cancel` - Cancel the current navigation goal
+- `help` - Display available commands
+
+### Navigation System Components
+
+The navigation system consists of:
+
+1. **Navigation Stack (Nav2)**: Provides path planning, obstacle avoidance, and localization
+2. **Robot State Publisher**: Publishes the robot's TF frames for visualization and motion planning
+3. **Improved Arduino Motor Bridge**: Communicates with the Arduino with better error handling and reconnection capabilities
+4. **Map Server**: Loads the pre-built map for navigation
+5. **Visualization**: Enhanced RViz for visualizing the robot, map, and navigation plans
+
+## Improved Arduino Bridge for Navigation
+
+The improved Arduino Motor Bridge now features:
+
+1. **Robust Serial Communication**:
+   - Automatic reconnection if connection is lost
+   - Better error handling with appropriate feedback
+   - Port locking to prevent conflicts with other processes
+
+2. **Enhanced Data Processing**:
+   - More reliable parsing of Arduino responses
+   - Better handling of malformed data
+   - Improved thread safety with proper locking
+
+3. **Safety Features**:
+   - Automatic motor stop if no commands received recently
+   - Better shutdown sequence to ensure motors are stopped
+   - Protection against communication errors affecting robot behavior
+
+## Diagnostic and Troubleshooting Tools
+
+### Arduino Connection Diagnostic
+
+To diagnose Arduino connectivity issues separately from navigation:
+
+```bash
+./src/arduino_motor_bridge/arduino_diagnostic.sh
+```
+
+Options:
+- `--port=/dev/ttyXXX` - Specify Arduino port
+- `--verbose` - Show detailed debug information
+- `--reset-arduino` - Reset Arduino before connecting
+
+### Debug Motor Control
+
+For testing motor control in detail:
+
+```bash
+./src/arduino_motor_bridge/debug_motor_control.sh
+```
+
+### Test Hall Sensor
+
+To test hall sensor odometry function:
+
+```bash
+python3 src/arduino_motor_bridge/test_hall_sensor.py
+```
+
+### Automated Motor Testing
 
 The package includes a test script to verify motor functionality:
 
 ```bash
 python3 test_motor_control.py
 ```
-
-This will run a sequence of movement tests including:
-- Forward motion
-- Backward motion
-- Direction changes
-- Turning
-- Stop commands
-
-## Parameter Configuration
-
-The bridge node can be configured using ROS2 parameters:
-
-- **serial_port**: Arduino serial port (default: `/dev/ttyACM0`)
-- **baud_rate**: Serial communication speed (default: `115200`)
-- **cmd_vel_topic**: Topic name for velocity commands (default: `/cmd_vel`)
-- **odom_topic**: Topic name for odometry (default: `/odom`)
-- **frame_id**: TF frame for odometry (default: `odom`)
-- **child_frame_id**: TF frame for robot (default: `base_link`)
-
-You can set these parameters in the launch file or via the command line.
-
-## Tuning Motor Parameters
-
-For optimal performance, you may need to adjust the following parameters in the Arduino code:
-
-- **minMotorSpeed**: Minimum PWM for forward movement (default: 90)
-- **minBackwardSpeed**: Minimum PWM for backward movement (default: 110)
-- **baseSpeed**: Default speed for manual control (default: 150)
-
-If your motors don't rotate reliably in certain directions:
-1. Increase the minimum speed values
-2. Check motor driver connections
-3. Ensure power supply is adequate
 
 ## Troubleshooting
 
@@ -219,11 +329,70 @@ If your motors don't rotate reliably in certain directions:
 - Check which board you have with `arduino-cli board list`
 - Verify the port with `ls -l /dev/ttyACM*`
 
-### Encoder Feedback Issues
+### Navigation Issues
 
-- Verify hall sensor connections
-- Check interrupt pin assignment
-- Test encoders independently with a simple test sketch
+- Check for errors in the behavior tree initialization
+- Make sure the map and robot are properly configured
+- Verify TF frames are published correctly (look at the TF tree in RViz)
+- Look at the navigation costmaps for obstacles or planning issues
+- Watch for errors in the terminal output
+
+### Display/GUI Issues
+
+If you encounter issues with RViz or other GUI components:
+- Ensure the DISPLAY environment variable is set correctly (e.g., `export DISPLAY=:1`)
+- All scripts now automatically set this, but if you run individual components manually, you may need to set it yourself
+
+## Parameter Configuration
+
+### Arduino Bridge Parameters
+
+The bridge node can be configured using ROS2 parameters:
+
+- **serial_port**: Arduino serial port (default: `/dev/ttyACM0`)
+- **baud_rate**: Serial communication speed (default: `115200`)
+- **cmd_vel_topic**: Topic name for velocity commands (default: `/cmd_vel`)
+- **odom_topic**: Topic name for odometry (default: `/odom`)
+- **frame_id**: TF frame for odometry (default: `odom`)
+- **child_frame_id**: TF frame for robot (default: `base_link`)
+
+You can set these parameters in the launch file or via the command line.
+
+### Navigation Parameters
+
+Navigation parameters can be customized in:
+- `src/robot_navigation/config/nav2_params.yaml`
+
+### Advanced Configuration
+
+#### Behavior Trees
+
+The navigation system uses custom behavior trees located in `config/`:
+- `navigate_w_replanning.xml` - Used for single pose navigation
+- `navigate_through_poses.xml` - Used for waypoint following
+
+#### RViz Configuration
+
+The enhanced RViz configuration in `config/nav2_visualization.rviz` provides:
+- Visualization of the map and costmaps
+- Robot model and TF frames
+- Path planning visualization
+- Velocity command monitoring
+- Localization information (particle clouds)
+- Motor command visualization
+
+## Tuning Motor Parameters
+
+For optimal performance, you may need to adjust the following parameters in the Arduino code:
+
+- **minMotorSpeed**: Minimum PWM for forward movement (default: 90)
+- **minBackwardSpeed**: Minimum PWM for backward movement (default: 110)
+- **baseSpeed**: Default speed for manual control (default: 150)
+
+If your motors don't rotate reliably in certain directions:
+1. Increase the minimum speed values
+2. Check motor driver connections
+3. Ensure power supply is adequate
 
 ## Implemented Improvements
 
@@ -242,6 +411,12 @@ The current version includes several key improvements:
    - Watchdog timer to stop motors on communication loss
    - Proper error handling for serial communication
    - Enhanced odometry data format
+
+4. **Navigation Integration**:
+   - Full integration with Nav2 stack
+   - Improved visualization
+   - Simulated and real hardware options
+   - Command-line interface for goal setting
 
 ## Arduino Board Advantages
 
