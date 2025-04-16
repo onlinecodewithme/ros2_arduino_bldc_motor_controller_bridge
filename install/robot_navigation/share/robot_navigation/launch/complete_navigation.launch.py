@@ -70,14 +70,11 @@ def generate_launch_description():
         }.items()
     )
     
-    # Include Arduino bridge launch
+    # Include auto-detecting Arduino bridge launch
     arduino_bridge_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            os.path.join(arduino_pkg_dir, 'launch', 'arduino_bridge.launch.py')
-        ]),
-        launch_arguments={
-            'serial_port': serial_port
-        }.items()
+            os.path.join(arduino_pkg_dir, 'launch', 'auto_arduino_bridge.launch.py')
+        ])
     )
     
     # Include navigation launch (with map server, AMCL, planners, etc.)
