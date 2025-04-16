@@ -1,0 +1,1 @@
+/home/x4/ros2_ws_arduino/build/robot_navigation/launch/nav_with_hall_sensors.launch.py

@@ -13,17 +13,17 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         # Include all launch files
-        (os.path.join('share', package_name, 'launch'), 
+        (os.path.join('share', package_name, 'launch'),
          glob('launch/*.launch.py')),
         # Include all config files
-        (os.path.join('share', package_name, 'config'), 
+        (os.path.join('share', package_name, 'config'),
          glob('config/*.yaml')),
         # Create a lib directory for executables
-        (os.path.join('lib', package_name), []),
+        (os.path.join('lib', package_name), [])
     ],
     install_requires=[
         'setuptools',
-        'transforms3d',  # Alternative to tf_transformations
+        'transforms3d'  # Alternative to tf_transformations
     ],
     zip_safe=True,
     maintainer='user',
@@ -36,6 +36,7 @@ setup(
             'arduino_bridge_node = arduino_motor_bridge.arduino_bridge_node:main',
             'improved_arduino_bridge = arduino_motor_bridge.improved_bridge_node:main',
             'test_arduino_commands = arduino_motor_bridge.test_arduino_commands:main',
+            'hall_sensor_odometry = arduino_motor_bridge.hall_sensor_odometry:main',
         ],
     },
 )

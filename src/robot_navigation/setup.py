@@ -21,6 +21,9 @@ setup(
         # Include map files
         (os.path.join('share', package_name, 'maps'),
             glob(os.path.join('maps', '*'))),
+        # Include URDF files
+        (os.path.join('share', package_name, 'urdf'),
+            glob(os.path.join('urdf', '*'))),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -34,6 +37,7 @@ setup(
             'navigation_node = robot_navigation.navigation_node:main',
             'navigation_cli = robot_navigation.navigation_cli:main',
             'test_goal_navigation = robot_navigation.test_goal_navigation:main',
+            'simulated_odometry = robot_navigation.simulated_odometry:main',
         ],
     },
 )

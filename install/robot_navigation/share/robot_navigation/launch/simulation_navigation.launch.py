@@ -1,0 +1,1 @@
+/home/x4/ros2_ws_arduino/build/robot_navigation/launch/simulation_navigation.launch.py

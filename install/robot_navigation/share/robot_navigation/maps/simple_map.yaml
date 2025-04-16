@@ -1,7 +1,1 @@
-image: simple_map.pgm
-resolution: 0.05  # meters per pixel
-origin: [-5.0, -5.0, 0.0]  # [x, y, yaw]
-negate: 0
-occupied_thresh: 0.65
-free_thresh: 0.196
-mode: scale
+/home/x4/ros2_ws_arduino/build/robot_navigation/maps/simple_map.yaml
