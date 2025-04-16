@@ -16,6 +16,11 @@ This system provides a reliable interface between ROS2 and Arduino-controlled DC
 - **Full ROS2 Navigation2 (Nav2) integration for autonomous navigation**
 - **Improved Arduino connectivity with auto-reconnection**
 - **Navigation visualization tools with RViz**
+- **Automated Arduino port detection and connection**
+- **Complex map navigation capabilities**
+- **Hall sensor odometry for improved position tracking**
+- **Multiple simulation options for testing without hardware**
+- **Auto-complete navigation with pre-configured components**
 
 ## Hardware Requirements
 
@@ -204,6 +209,26 @@ For different navigation configurations:
 4. **Real Hardware Navigation with All Components**:
    ```bash
    ./src/robot_navigation/run_real_hardware_navigation.sh
+   ```
+
+5. **Navigation with Auto-Detecting Arduino Bridge**:
+   ```bash
+   ./src/robot_navigation/run_navigation_with_auto_arduino.sh
+   ```
+
+6. **Complex Map Navigation**:
+   ```bash
+   ./src/robot_navigation/run_complex_map_navigation.sh
+   ```
+
+7. **Auto-Complete Navigation (all components pre-configured)**:
+   ```bash
+   ./src/robot_navigation/run_auto_complete_navigation.sh
+   ```
+
+8. **Auto Navigation with RViz Visualization**:
+   ```bash
+   ./src/robot_navigation/run_auto_navigation_rviz.sh
    ```
 
 ### Setting Navigation Goals
@@ -417,6 +442,27 @@ The current version includes several key improvements:
    - Improved visualization
    - Simulated and real hardware options
    - Command-line interface for goal setting
+
+5. **Auto-Detecting Arduino System**:
+   - Automatically detects connected Arduino devices
+   - Tries multiple ports until a working connection is established
+   - Verifies correct firmware with handshake protocol
+   - Built-in reset capability for problematic connections
+
+6. **Hall Sensor Odometry**:
+   - Improved position tracking using hall effect sensors
+   - More accurate navigation with wheel rotation counting
+   - Enhanced dead reckoning for challenging environments
+
+7. **Complex Map Navigation**:
+   - Support for larger, more detailed maps
+   - Better handling of complex environments with obstacles
+   - Improved path planning around tight corners and narrow passages
+
+8. **Auto-Complete Navigation System**:
+   - Pre-configured components for one-click startup
+   - Automatic parameter tuning based on robot characteristics
+   - Streamlined launch sequence for faster deployment
 
 ## Arduino Board Advantages
 
